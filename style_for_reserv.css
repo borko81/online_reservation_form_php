@@ -1,0 +1,76 @@
+body {
+    margin:20px;
+    border-collapse: collapse;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.wrapper {
+    display:grid;
+    grid-gap:10px;
+    grid-template-columns: repeat(2, [col] 50%);
+    grid-template-rows: repeat(2, [row] auto);
+}
+.box_one {
+    border: 1px solid black;
+    border-radius: 10px 10px 0 0;
+    background-color: rgba(192,192,192,0.3)
+}
+.box {
+    border: 1px solid black;
+}
+.c {
+    grid-column: col /span 2;
+}
+.free_label {
+    font-weight: bold;
+    padding: 5px;
+    text-align: left;
+}
+.div_with_margin {
+    margin: 5px;
+}
+.note_class {
+    width: 100%;
+    
+}
+.my_but {
+    text-transform: uppercase;
+}
+#button_take_down {
+    position: relative;
+    bottom: -48px;
+    
+}
+.res_header {
+    display: inline-block;
+}
+.res_header p{
+    text-transform: uppercase;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: 5px;
+    margin-bottom: 5px;
+    text-align: left;
+    display: inline-block;
+}
+.politics {
+    text-align: right;
+    display: inline-block;
+    position:absolute;
+    right: 10px;
+}
+.res_header a {
+    text-decoration: none;
+    color: #000;
+}
+.res_header a:hover {
+    text-decoration: underline;
+}
+
+.mygrid-container {
+    display: grid;
+    grid-gap:10px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.grid-item {
+    background-color: lightblue !important;
+}
