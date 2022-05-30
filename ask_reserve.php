@@ -64,7 +64,7 @@ session_start();
                 </div>
                 
                 <div class="form-group div_with_margin">
-                    <textarea name="potv_comment" id="potv_comment" class="note_class" placeholder="Коментар ако има такъв, ще бъде изпълнен по възможност"></textarea>
+                    <textarea name="potv_comment" id="potv_comment" class="note_class" placeholder="Коментар ако има такъв, ще бъде изпълнен по възможност" style="resize:none"></textarea>
                 </div>
                 <?php
                     echo "<div>";
@@ -116,10 +116,17 @@ session_start();
 
     <script type="text/javascript">
 
+        let income_input = document.getElementById("income_date");
+        let outcome_input = document.getElementById("outcome_date");
+        
+        income_input.addEventListener("click", function () {
+            income_input.showPicker()
+        });
 
+        outcome_input.addEventListener("click", function () {
+            outcome_input.showPicker()
+        });
 
-
-        // Message laoding show while result return from server part.
         var $loading = $('#loadingDiv').hide();
         $(document)
         .ajaxStart(function () {
@@ -158,7 +165,6 @@ session_start();
                               information_schema += income + ':';
                               information_schema += outcome + ':';
                               information_schema += people;
-                            console.log(information_schema);
                             $('.human_choice_hidden').val(information_schema);
                         });
 

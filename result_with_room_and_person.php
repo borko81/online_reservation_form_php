@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style_for_reserv.css">  
+    <link rel="stylesheet" href="style_for_reserv.css"> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> 
     <title>Document</title>
 </head>
 <body>
@@ -39,53 +40,53 @@
     ) {
         $URL_FOR_ADD_RESERV = $URL_TO_POST_RESERV_OUTSIDE;
         if (empty($_POST['room_hidden_id'])) {
-            echo "Изберете тип помещение";
-            return;
-        }
-        $splitted_hidden_date = explode(":", htmlspecialchars(trim($_POST['room_hidden_id'])));
-        $children = array_slice($splitted_hidden_date, 6);
-        $child_count = [];
-        if(sizeof($children) > 0) {
-            for ($i=0; $i<sizeof($children);$i++) {
-                array_push($child_count, $children[$i]);
-            }
-        }
-
-        $data = array(
-            "arrival"=> $splitted_hidden_date[3],
-            "departure"=> $splitted_hidden_date[4],
-            "guestName"=> $_POST['potv_name'],
-            "phoneNumber"=> $_POST['potv_tel'],
-            "emailAddress"=> $_POST['potv_email'],
-            "note"=> substr(preg_replace("/\"/","'",htmlspecialchars(trim($_POST['potv_comment']))), 0, 150),
-            "paymentType"=> 0,
-            "referenceNumber"=> "string",
-            "rooms"=> [
-            
-                array(
-                    "roomTypeId"=> $splitted_hidden_date[0],
-                    "adults"=> $splitted_hidden_date[5],
-                    "boardTypeId"=> null,
-                    "childrenAge"=> $child_count
-                )
-            ]
-            );
-
-        // var_dump($data);
-        // die();
-
-        $json_data = json_encode($data);
-
-        $response_data = httpPost($URL_FOR_ADD_RESERV, $json_data);
-        $php_readable_data = json_decode($response_data, true);
-        
-        var_dump($php_readable_data);
-
-        if ($php_readable_data['bookingId']) {
-            echo "Успешно направена резерация с номер : " . $php_readable_data['bookingId'] . " очакваите потвърждение от наш служител <bg />";
+            echo "<button class='btn btn-primary form-control go_back_button' id='go_back_button'>Върнете се за да изберете тип помещение</button>";
         } else {
-            echo "Възникна грешка, моля опитаите пак или се обадете на рецепция.<br />";
-            echo $php_readable_data['note'][0];
+            $splitted_hidden_date = explode(":", htmlspecialchars(trim($_POST['room_hidden_id'])));
+            $children = array_slice($splitted_hidden_date, 6);
+            $child_count = [];
+            if(sizeof($children) > 0) {
+                for ($i=0; $i<sizeof($children);$i++) {
+                    array_push($child_count, $children[$i]);
+                }
+            }
+
+            $data = array(
+                "arrival"=> $splitted_hidden_date[3],
+                "departure"=> $splitted_hidden_date[4],
+                "guestName"=> $_POST['potv_name'],
+                "phoneNumber"=> $_POST['potv_tel'],
+                "emailAddress"=> $_POST['potv_email'],
+                "note"=> substr(preg_replace("/\"/","'",htmlspecialchars(trim($_POST['potv_comment']))), 0, 150),
+                "paymentType"=> 0,
+                "referenceNumber"=> "string",
+                "rooms"=> [
+                
+                    array(
+                        "roomTypeId"=> $splitted_hidden_date[0],
+                        "adults"=> $splitted_hidden_date[5],
+                        "boardTypeId"=> null,
+                        "childrenAge"=> $child_count
+                    )
+                ]
+                );
+
+            // var_dump($data);
+            // die();
+
+            $json_data = json_encode($data);
+
+            $response_data = httpPost($URL_FOR_ADD_RESERV, $json_data);
+            $php_readable_data = json_decode($response_data, true);
+            
+            //var_dump($php_readable_data);
+
+            if (isset($php_readable_data['bookingId']) && (!empty($php_readable_data['bookingId']))) {
+                echo "Успешно направена резерация с номер : " . $php_readable_data['bookingId'] . " очакваите потвърждение от наш служител <bg />";
+            } else {
+                echo "Възникна грешка, моля опитаите пак или се обадете на рецепция.<br />";
+                echo $php_readable_data['note'][0] ? $php_readable_data['note'][0] : '';
+            }
         }
     }
 
@@ -94,9 +95,13 @@
 </div>
 
 <script>
+let go_back = document.getElementById("go_back_button");
+go_back.addEventListener("click", function () {
+    window.history.back();
+});
+
 if ( window.history.replaceState ) {
   window.history.replaceState( null, null, window.location.href );
-//   window.location.href="ask_reserve.php";
 }
 </script>
 </body>

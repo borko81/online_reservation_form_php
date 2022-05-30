@@ -92,3 +92,8 @@ body {
     background-color: lightblue;
     color: #000;
 }
+
+.go_back_button {
+    width: 50%;
+    text-transform: uppercase;
+}
