@@ -1,3 +1,9 @@
+<?php
+session_start();
+?>
+
+<?php include 'const.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,12 +15,12 @@
 <body>
     <?php
         //var_dump($_POST);
-        
-        $income = isset($_POST['income']) ? htmlspecialchars($_POST['income']) : '';
-        $outcome = isset($_POST['outcome']) ? htmlspecialchars($_POST['outcome']) : '';
-        $people = isset($_POST['people']) ? explode(":", $_POST['people']) : '';
+
+        $income = trim(isset($_POST['income']) ? htmlspecialchars($_POST['income']) : '');
+        $outcome = trim(isset($_POST['outcome']) ? htmlspecialchars($_POST['outcome']) : '');
+        $people = isset($_POST['people']) ? explode(":", trim($_POST['people'])) : '';
         $people_count='';
-        $SITE_URL = "http://localhost:8080/api/Bookings/FreeRooms?";
+        $SITE_URL = $NEEDED_URL;
 
 
         if(!empty($income) && !empty($outcome) && !empty($people)) {
@@ -31,7 +37,7 @@
                 }
             }
 
-            $SITE_URL .= '&token=test1234';
+            $SITE_URL .= "&token=$TOKEN";
 
             // echo $SITE_URL;
             
@@ -50,11 +56,9 @@
 
                     echo "<div class='grid-item'>";
                     echo "<h3 class='card-title'>$room_tipe</h3> ";
-                    echo "<h5 class='card-text'>Сума  $price лв. избор <input type='radio' id='huey' name='room_choice' value='{$room_id}:{$price}:{$room_tipe}'></h5>";
+                    echo "<h5 class='card-text'>Сума  $price лв. избор <input type='radio' id='huey' name='room_choice' value='{$room_id}:{$price}:{$room_tipe}' required></h5>";
                     echo "</div>";
-                
                 }
-
         }
     ?>
 </body>

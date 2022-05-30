@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -11,8 +15,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Резервационна система</title>
 </head>
-<body>
 
+<body>
     <div class="res_header">
         <p>LOGO</p>
         <a href="" class="politics" data-toggle="modal" data-target="#myModal">Общи условия</a>
@@ -21,7 +25,7 @@
     <div class="wrapper">
         <!-- Форма за запитване, начална краина дата брои гости -->
         <div class="box_one a">
-            <form action="" name="ask_for_free_rooms" method="GET">
+            <form action="" name="ask_for_free_rooms" method="POST">
                 <div class="form-group div_with_margin">
                     <label for="income_date" class="free_label">Пристигане</label><br />
                     <input type="date" id="income_date" class="form-control" name="income_date" required="true">
@@ -48,20 +52,26 @@
             </form>
         </div>
         <div class="box_one b">
-            <form action="" method="POST">
+            <form action="result_with_room_and_person.php" method="POST">
                 <div class="form-group div_with_margin">
-                    <input type="text" id="potv_name" class="form-control" name="potv_name" placeholder="Въведете име" equired="true">
+                    <input type="text" id="potv_name" class="form-control" name="potv_name" placeholder="Въведете име" required="true">
                 </div>
                 <div class="form-group div_with_margin">
-                    <input type="tel" id="potv_tel" class="form-control" name="potv_tel" placeholder="Въведете телефон" equired="true">
+                    <input type="tel" id="potv_tel" class="form-control" name="potv_tel" placeholder="Въведете телефон" required="true">
                 </div>
                 <div class="form-group div_with_margin">
-                    <input type="emai" id="potv_email" class="form-control" name="potv_email" placeholder="Въведете email" equired="true">
+                    <input type="emai" id="potv_email" class="form-control" name="potv_email" placeholder="Въведете email" required="true">
                 </div>
+                
                 <div class="form-group div_with_margin">
                     <textarea name="potv_comment" id="potv_comment" class="note_class" placeholder="Коментар ако има такъв, ще бъде изпълнен по възможност"></textarea>
                 </div>
-                <div class="form-group div_with_margin">
+                <?php
+                    echo "<div>";
+                    echo "<input type='hidden' class='human_choice_hidden form-control' name='room_hidden_id'>";
+                    echo "</div>";
+                ?>
+                  <div class="form-group div_with_margin">
                     <input type="submit" name="SubmitForTakeReserv" value="Направи резерация" class="form-control btn btn-primary my_but" id="button_take_down">
                 </div>
             </form>
@@ -70,6 +80,7 @@
         <?php
 
             echo "<div class='box c'>";
+                echo "<div id='loadingDiv'>Зарежда се резултат</div>";
                 echo "<div class='mygrid-container' id='msg'></div>";
             echo "</div>";
 
@@ -77,7 +88,7 @@
 
       </div>
 
-      <!-- Modalen prozorec s ob]ite uslowiq -->
+      <!-- Modalen prozorec s obshtite uslowiq -->
       <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
         
@@ -104,12 +115,20 @@
       </div>
 
     <script type="text/javascript">
-        $(function () {
-            $("a[class='Update']").click(function () {
-                alert("!")
-          
-            });
+
+
+
+
+        // Message laoding show while result return from server part.
+        var $loading = $('#loadingDiv').hide();
+        $(document)
+        .ajaxStart(function () {
+            $loading.show();
+        })
+        .ajaxStop(function () {
+            $loading.hide();
         });
+
         $( "#ask_for_rooms" ).on( "click", function() {
             let income = $("#income_date").val();
             let outcome = $("#outcome_date").val();
@@ -118,6 +137,7 @@
             if (income && outcome && people) {
 
                 $.ajax({
+
                     type:"post",
                     url:"server_action.php",
                     data: 
@@ -129,9 +149,19 @@
                     cache:false,
                     success: function (html) 
                     {
-                    // Send data maybe add some clock to show something?
-                    //alert('Data Send');
                     $('#msg').html(html);
+
+                        $('input[type=radio]').click( function(e) {
+                            let human_choice = $(this).val();
+                            let information_schema = '';
+                              information_schema += human_choice  + ':';
+                              information_schema += income + ':';
+                              information_schema += outcome + ':';
+                              information_schema += people;
+                            console.log(information_schema);
+                            $('.human_choice_hidden').val(information_schema);
+                        });
+
                     }
                 });
                 return false;
