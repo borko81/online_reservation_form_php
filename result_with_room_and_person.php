@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style_for_reserv.css"> 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> 
-    <title>Document</title>
+    <title>Generate reserve</title>
 </head>
 <body>
 <?php include 'const.php';?>    
@@ -16,6 +20,10 @@
     <?php
 
     // var_dump($_POST['room_hidden_id']);
+
+    function validateEmail($email) {
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
+     }
 
     function httpPost($url, $data) {
         $curl = curl_init($url);
@@ -32,10 +40,16 @@
         return $response;
     }
 
+    if ($_SESSION["reload_page"] == "borko") {
+        header('Location: ask_reserve.php');
+    }
+
     if (
+        ($_SESSION["reload_page"] == null) &&
         isset($_POST['room_hidden_id']) &&
         isset($_POST['potv_name']) &&
         isset($_POST['potv_email']) &&
+        validateEmail($_POST['potv_email']) &&
         isset($_POST['potv_tel'])
     ) {
         $URL_FOR_ADD_RESERV = $URL_TO_POST_RESERV_OUTSIDE;
@@ -82,12 +96,26 @@
             //var_dump($php_readable_data);
 
             if (isset($php_readable_data['bookingId']) && (!empty($php_readable_data['bookingId']))) {
-                echo "Успешно направена резерация с номер : " . $php_readable_data['bookingId'] . " очакваите потвърждение от наш служител <bg />";
+                $RES_ID = $php_readable_data['bookingId'];
+                $_SESSION["reload_page"] = "borko";
+                echo "<div id='myModal' class='modal'>";
+
+                echo    "<div class='modal-content'>";
+                echo        "<span class='close'>&times;</span>";
+                echo        "<p>Успешно направена резерация с номер :  $RES_ID очакваите потвърждение от наш служител</p>";
+                echo     "</div>";
+
+                echo "</div>";
+                echo "<script>let modal =document.getElementById('myModal');modal.style.display = 'block';</script>";
+
             } else {
                 echo "Възникна грешка, моля опитаите пак или се обадете на рецепция.<br />";
                 echo $php_readable_data['note'][0] ? $php_readable_data['note'][0] : '';
             }
         }
+    } else {
+        echo "Възникна грешка, моля опитаите пак или се обадете на рецепция.<br />";
+        echo "<button class='btn btn-primary form-control go_back_button' id='go_back_button'>Върнете се обратно и преверете данните.</button>";
     }
 
     ?>
@@ -95,14 +123,39 @@
 </div>
 
 <script>
+
+// Get the button that opens the modal
+
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+  window.location.assign("ask_reserve.php");
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+    window.location.assign("ask_reserve.php");
+  }
+}
+
+
 let go_back = document.getElementById("go_back_button");
 go_back.addEventListener("click", function () {
     window.history.back();
 });
 
 if ( window.history.replaceState ) {
-  window.history.replaceState( null, null, window.location.href );
+        window.history.replaceState( null, null, window.location.href );
 }
+
 </script>
 </body>
 </html>

@@ -1,6 +1,9 @@
 <?php
 session_start();
+$_SESSION["reload_page"] = null;
+session_destroy();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="bg">
