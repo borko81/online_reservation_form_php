@@ -11,6 +11,44 @@ session_start();
     <link rel="stylesheet" href="style_for_reserv.css"> 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> 
     <title>Generate reserve</title>
+    <style>
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <?php include 'const.php';?>    
@@ -40,12 +78,13 @@ session_start();
         return $response;
     }
 
-    if ($_SESSION["reload_page"] == "borko") {
+    // Check if user refresh page and try to isert data again, variable borko i fake may change it
+    if (isset($_SESSION['reload_page']) && ($_SESSION["reload_page"] == "borko")) {
         header('Location: ask_reserve.php');
     }
 
     if (
-        ($_SESSION["reload_page"] == null) &&
+        (!isset($_SESSION["reload_page"])) &&
         isset($_POST['room_hidden_id']) &&
         isset($_POST['potv_name']) &&
         isset($_POST['potv_email']) &&
@@ -54,7 +93,7 @@ session_start();
     ) {
         $URL_FOR_ADD_RESERV = $URL_TO_POST_RESERV_OUTSIDE;
         if (empty($_POST['room_hidden_id'])) {
-            echo "<button class='btn btn-primary form-control go_back_button' id='go_back_button'>Върнете се за да изберете тип помещение</button>";
+            echo "<button class='btn btn-primary form-control go_back_button' id='go_back_button' onclick='go_back()';>Върнете се за да изберете тип помещение</button>";
         } else {
             $splitted_hidden_date = explode(":", htmlspecialchars(trim($_POST['room_hidden_id'])));
             $children = array_slice($splitted_hidden_date, 6);
@@ -124,10 +163,6 @@ session_start();
 
 <script>
 
-// Get the button that opens the modal
-
-
-// Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal 
@@ -146,14 +181,8 @@ window.onclick = function(event) {
   }
 }
 
-
-let go_back = document.getElementById("go_back_button");
-go_back.addEventListener("click", function () {
+function go_back() {
     window.history.back();
-});
-
-if ( window.history.replaceState ) {
-        window.history.replaceState( null, null, window.location.href );
 }
 
 </script>

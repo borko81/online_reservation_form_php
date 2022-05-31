@@ -20,6 +20,7 @@ session_destroy();
 </head>
 
 <body>
+
     <div class="res_header">
         <p>LOGO</p>
         <a href="" class="politics" data-toggle="modal" data-target="#myModal">Общи условия</a>
@@ -50,10 +51,11 @@ session_destroy();
                       </select>
                 </div>
                 <div id="form-group div_with_margin">
-                    <button class="btn btn-primary form-control my_but" name="ask_for_rooms" id="ask_for_rooms">Проверка за свободни помещение</button>
+                    <button class="btn btn-primary form-control my_but" name="submit1" id="ask_for_rooms" type="submit">Проверка за свободни помещение</button>
                 </div>
             </form>
         </div>
+
         <div class="box_one b">
             <form action="result_with_room_and_person.php" method="POST">
                 <div class="form-group div_with_margin">
@@ -79,6 +81,7 @@ session_destroy();
                 </div>
             </form>
         </div>
+
         <!-- Show free room's -->
         <?php
 
@@ -145,7 +148,6 @@ session_destroy();
             let people = $("#people_count").val();
             
             if (income && outcome && people) {
-
                 $.ajax({
 
                     type:"post",
